@@ -1,21 +1,21 @@
-(async () => {
-  // prevent the phishing banner from appearing
-  if (!localStorage.HIDE_PHISHING_BANNER)
-    localStorage.HIDE_PHISHING_BANNER = !0;
+(async (d, p, ts) => {
+  // keep the phishing banner hidden
+  localStorage[p] || (localStorage[p] = !0);
 
   // remove the "Open Sandbox" watermark button
   const wm_iframe = await (async () => {
-    do {
-      const iframes = document.querySelectorAll('iframe');
-      for (const iframe of iframes)
+    for (; Date.now() < ts + d;) {
+      for (let iframe of document.querySelectorAll('iframe'))
         if (iframe.id.startsWith('sb__open-sandbox')) return iframe;
-      await new Promise((res) => setTimeout(res, 0));
-    } while (!0);
+      await new Promise(res => setTimeout(res, 0));
+    }
+    return;
   })();
 
+  if (!wm_iframe) return console.warn(`no watermark button detected within ${d}ms`);
   const div = document.createElement('div');
   div.id = wm_iframe.id;
-  
+
   wm_iframe.remove();
   document.body.append(div);
-})();
+})(1750, 'HIDE_PHISHING_BANNER', Date.now());
