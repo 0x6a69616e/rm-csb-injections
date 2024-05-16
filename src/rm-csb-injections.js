@@ -1,10 +1,10 @@
-(async (d, p, ts) => {
+(async function(delay, key, timestamp) {
   // keep the phishing banner hidden
-  localStorage[p] || (localStorage[p] = !0);
-
+  localStorage[key] || (localStorage[key] = !0);
+  
   // remove the "Open Sandbox" watermark button
-  const wm_iframe = await (async () => {
-    for (; Date.now() < ts + d;) {
+  const wm_iframe = await (async function() {
+    for (; Date.now() < timestamp + delay;) {
       for (let iframe of document.querySelectorAll('iframe'))
         if (iframe.id.startsWith('sb__open-sandbox')) return iframe;
       await new Promise(res => setTimeout(res, 0));
@@ -12,7 +12,7 @@
     return;
   })();
 
-  if (!wm_iframe) return console.warn(`no watermark button detected within ${d}ms`);
+  if (!wm_iframe) return console.warn(`no watermark button detected within ${delay}ms`);
   const div = document.createElement('div');
   div.id = wm_iframe.id;
 
